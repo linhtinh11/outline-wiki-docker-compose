@@ -11,6 +11,9 @@ data/certs/private.key data/certs/public.crt: env.outline data/certs/dhparam.pem
 env.slack: env.outline
 	@bash generate_conf.sh create_slack_env
 
+env.oauth2: env.outline
+	@bash generate_conf.sh create_oauth2_env
+
 .PHONY: clean install start
 
 https: data/certs/private.key
@@ -22,7 +25,13 @@ init-data-dirs: env.outline
 install: env.outline env.minio env.slack init-data-dirs
 	@echo "=>run 'make start' and your server should be ready shortly."
 
+install.oauth2: env.outline env.minio env.oauth2 init-data-dirs
+	@echo "=>run 'make start.oauth2' and your server should be ready shortly."
+
 start: install
+	docker-compose up -d
+
+start.oauth2: install.oauth2
 	docker-compose up -d
 
 logs:

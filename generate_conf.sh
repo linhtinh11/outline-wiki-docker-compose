@@ -36,6 +36,29 @@ function env_delete {
     sed "/${key}/d" -i env.outline
 }
 
+function create_oauth2_env {
+    set -o allexport; source env.outline; set +o allexport
+    echo "Settings for OAuth2 environment"
+
+    if test -f env.oauth2; then
+        set -o allexport; source env.oauth2; set +o allexport
+    fi
+
+    read -p "Enter Client ID [$OIDC_CLIENT_ID] : " OIDC_CLIENT_ID_INP
+    read -p "Enter Client Secret [$OIDC_CLIENT_SECRET]: " OIDC_CLIENT_SECRET_INP
+    read -p "Enter Auth URI [$OIDC_AUTH_URI] : " OIDC_AUTH_URI_INP
+    read -p "Enter Token URI [$OIDC_TOKEN_URI] : " OIDC_TOKEN_URI_INP
+    read -p "Enter User URI [$OIDC_USERINFO_URI] : " OIDC_USERINFO_URI_INP
+
+    touch env.slack
+    env_add OIDC_CLIENT_ID ${OIDC_CLIENT_ID_INP:-OIDC_CLIENT_ID} env.oauth2
+    env_add OIDC_CLIENT_SECRET ${OIDC_CLIENT_SECRET_INP:-OIDC_CLIENT_SECRET} env.oauth2
+    env_add OIDC_AUTH_URI ${OIDC_AUTH_URI_INP:-OIDC_AUTH_URI} env.oauth2
+    env_add OIDC_TOKEN_URI ${OIDC_TOKEN_URI_INP:-OIDC_TOKEN_URI} env.oauth2
+    env_add OIDC_USERINFO_URI ${OIDC_USERINFO_URI_INP:-OIDC_USERINFO_URI} env.oauth2
+    env_add OIDC_SCOPES "openid profile email" env.oauth2
+}
+
 function create_slack_env {
     # get url from outline env
     set -o allexport; source env.outline; set +o allexport

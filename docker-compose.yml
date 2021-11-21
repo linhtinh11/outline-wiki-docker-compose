@@ -30,6 +30,7 @@ services:
     env_file:
       - ./env.outline
       - ./env.slack
+      - ./env.oauth2
     restart: always
     depends_on:
       - postgres
